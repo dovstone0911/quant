@@ -1,0 +1,55 @@
+# Composer
+vendor/
+composer.lock
+composer.phar
+
+# Cache
+.cache/
+cache/
+*.cache
+
+# Logs
+*.log
+logs/
+error_log
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+*.coverage
+*.html
+.phpunit.result.cache
+.test
+
+# Build
+build/
+dist/
+*.phar
+
+# Temp
+tmp/
+temp/
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Project specific
+data/
+*.sqlite
+*.sqlite3

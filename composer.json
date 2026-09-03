@@ -1,0 +1,51 @@
+{
+    "name": "dovstone0911/quant",
+    "description": "Quant - NoSQL-like syntax, SQL-powered ORM for PHP",
+    "type": "library",
+    "keywords": [
+        "orm",
+        "database",
+        "nosql",
+        "sql",
+        "query-builder",
+        "php8"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dov Stone",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "ext-pdo": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.6"
+    },
+    "suggest": {
+        "ext-pdo_mysql": "For MySQL driver",
+        "ext-pdo_pgsql": "For PostgreSQL driver",
+        "ext-pdo_sqlite": "For SQLite driver"
+    },
+    "autoload": {
+        "psr-4": {
+            "Quant\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Quant\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
