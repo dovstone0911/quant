@@ -1,5 +1,5 @@
 {
-    "name": "dovstone0911/quant",
+    "name": "dovstone/quant",
     "description": "Quant - NoSQL-like syntax, SQL-powered ORM for PHP",
     "type": "library",
     "keywords": [
