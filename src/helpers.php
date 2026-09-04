@@ -1,11 +1,30 @@
 <?php
 
+use Quant\Query\Builder;
+use Quant\Database\Connection;
+
 /**
  * Create a new Query Builder instance
  */
-function quant(string $collection): Quant\Query\Builder
+function quant(string $collection): Builder
 {
-    return new Quant\Query\Builder($collection);
+    return new Builder($collection);
+}
+
+/**
+ * Initialize Quant from DATABASE string
+ */
+function quant_init(string $databaseString): void
+{
+    \Quant\Database\Config::fromString($databaseString);
+}
+
+/**
+ * Get PDO connection
+ */
+function quant_db(): PDO
+{
+    return Connection::get();
 }
 
 /**

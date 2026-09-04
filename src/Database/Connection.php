@@ -3,7 +3,6 @@
 namespace Quant\Database;
 
 use PDO;
-use PDOException;
 
 class Connection
 {
@@ -23,35 +22,22 @@ class Connection
         $config = Config::get();
         $dsn = Config::getDsn();
 
-        $options = [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-            PDO::ATTR_STRINGIFY_FETCHES => false,
-        ];
-
-        if (!empty($config['options'])) {
-            $options = array_merge($options, $config['options']);
-        }
-
-        try {
-            self::$instance = new PDO(
-                $dsn,
-                $config['username'] ?? '',
-                $config['password'] ?? '',
-                $options
-            );
-        } catch (PDOException $e) {
-            throw new PDOException("Connection failed: " . $e->getMessage());
-        }
+        self::$instance = new PDO(
+            $dsn,
+            $config['username'],
+            $config['password'],
+            [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false,
+            ]
+        );
     }
 
     public static function beginTransaction(): bool
     {
         if (self::$transactionLevel === 0) {
-            self::$instance->beginTransaction();
-        } else {
-            self::$instance->exec("SAVEPOINT level" . self::$transactionLevel);
+            return self::$instance->beginTransaction();
         }
         self::$transactionLevel++;
         return true;
@@ -62,9 +48,8 @@ class Connection
         self::$transactionLevel--;
         if (self::$transactionLevel === 0) {
             return self::$instance->commit();
-        } else {
-            return self::$instance->exec("RELEASE SAVEPOINT level" . self::$transactionLevel) !== false;
         }
+        return true;
     }
 
     public static function rollback(): bool
@@ -72,9 +57,8 @@ class Connection
         self::$transactionLevel--;
         if (self::$transactionLevel === 0) {
             return self::$instance->rollBack();
-        } else {
-            return self::$instance->exec("ROLLBACK TO SAVEPOINT level" . self::$transactionLevel) !== false;
         }
+        return true;
     }
 
     public static function inTransaction(): bool
@@ -82,14 +66,13 @@ class Connection
         return self::$transactionLevel > 0;
     }
 
-    public static function getTransactionLevel(): int
+    public static function lastInsertId(): string
     {
-        return self::$transactionLevel;
+        return self::$instance->lastInsertId();
     }
 
-    public static function reconnect(): void
+    public static function quote(string $value): string
     {
-        self::$instance = null;
-        self::connect();
+        return self::$instance->quote($value);
     }
 }

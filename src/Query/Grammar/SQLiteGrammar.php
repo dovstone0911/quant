@@ -8,9 +8,9 @@ class SQLiteGrammar extends Grammar
     {
         $sql = "SELECT " . implode(', ', $select) . " FROM " . $this->quoteIdentifier($table);
 
-        [$whereSql, $bindings] = $this->compileWhere($where);
-        if (!empty($whereSql)) {
-            $sql .= " WHERE " . implode(' AND ', $whereSql);
+        if (!empty($where)) {
+            [$whereSql, $bindings] = $this->compileWhere($where);
+            $sql .= " WHERE " . $whereSql;
         }
 
         if (!empty($orderBy)) {
@@ -22,6 +22,18 @@ class SQLiteGrammar extends Grammar
             if ($offset !== null) {
                 $sql .= " OFFSET {$offset}";
             }
+        }
+
+        return $sql;
+    }
+
+    public function compileCount(string $table, array $where): string
+    {
+        $sql = "SELECT COUNT(*) FROM " . $this->quoteIdentifier($table);
+
+        if (!empty($where)) {
+            [$whereSql, $bindings] = $this->compileWhere($where);
+            $sql .= " WHERE " . $whereSql;
         }
 
         return $sql;
@@ -49,9 +61,9 @@ class SQLiteGrammar extends Grammar
 
         $sql = "UPDATE " . $this->quoteIdentifier($table) . " SET " . implode(', ', $sets);
 
-        [$whereSql, $bindings] = $this->compileWhere($where);
-        if (!empty($whereSql)) {
-            $sql .= " WHERE " . implode(' AND ', $whereSql);
+        if (!empty($where)) {
+            [$whereSql, $bindings] = $this->compileWhere($where);
+            $sql .= " WHERE " . $whereSql;
         }
 
         return $sql;
@@ -61,21 +73,9 @@ class SQLiteGrammar extends Grammar
     {
         $sql = "DELETE FROM " . $this->quoteIdentifier($table);
 
-        [$whereSql, $bindings] = $this->compileWhere($where);
-        if (!empty($whereSql)) {
-            $sql .= " WHERE " . implode(' AND ', $whereSql);
-        }
-
-        return $sql;
-    }
-
-    public function compileCount(string $table, array $where): string
-    {
-        $sql = "SELECT COUNT(*) FROM " . $this->quoteIdentifier($table);
-
-        [$whereSql, $bindings] = $this->compileWhere($where);
-        if (!empty($whereSql)) {
-            $sql .= " WHERE " . implode(' AND ', $whereSql);
+        if (!empty($where)) {
+            [$whereSql, $bindings] = $this->compileWhere($where);
+            $sql .= " WHERE " . $whereSql;
         }
 
         return $sql;
